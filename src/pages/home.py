@@ -30,3 +30,29 @@ df["zone"] = df["zone"].replace(country_mapping)
 
 # Préparation des données pour l'affichage
 sample_data = df.groupby("zone")["valeur"].mean().head()
+
+# Layout principal
+app.layout = html.Div(
+    style={
+        "backgroundColor": "#000000", 
+        "color": "white", 
+        "minHeight": "100vh", 
+        "padding": "20px", 
+        "fontFamily": "Arial"
+    },
+    children=[
+        html.H1("titre", style={"textAlign": "center", "color": "white", "marginBottom": "20px"}),
+        html.Div(
+            style={
+                "position": "relative",
+                "width": "100%",
+                "height": "100vh",
+                "padding": "0"
+            },
+            children=[
+                filter_component(df),
+                map_component()
+            ]
+        )
+    ]
+)
