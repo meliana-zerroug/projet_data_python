@@ -56,3 +56,29 @@ app.layout = html.Div(
         )
     ]
 )
+
+# Callback pour mettre à jour la carte en fonction du filtre 
+@app.callback(
+    Output("map-graph", "figure"),
+    [Input("indicator-dropdown", "value"),
+     Input("year-dropdown", "value")]
+)
+def update_map(selected_indicator, selected_year):
+    if not selected_indicator or not selected_year:
+        return {}
+    
+    # Filtrer par année
+    filtered_df = df[df["année"] == selected_year].copy()
+    
+    # Filtrer par indicateur sélectionné
+    indicator_mask = filtered_df["produit"] == selected_indicator
+    country_data = filtered_df[indicator_mask].groupby("zone")["valeur"].mean().reset_index()
+        
+    # Créer la carte en utilisant la fonction du composant map
+    from src.components.map_component import create_choropleth
+    fig = create_choropleth(country_data, selected_indicator, selected_year)
+
+    return fig
+
+if __name__ == "__main__":
+    app.run(debug=True)
