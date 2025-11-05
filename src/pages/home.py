@@ -1,25 +1,29 @@
 from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
 import pandas as pd
+import sqlite3
 from src.components.filter_component import filter_component
 from src.components.map_component import map_component
 from src.components.trend_line import trend_line_component
+from src.utils.country_mapping import country_mapping
 
 
 # Initialisation de l'application Dash 
 app = Dash(__name__)
 
 # Load data
-df = pd.read_csv("data/cleaned/clean_data.csv")
-
-from src.utils.country_mapping import country_mapping
+#df = pd.read_csv("data/cleaned/clean_data.csv")
+bdd_path = "data/raw/faostat_data.db"
+con = sqlite3.connect(bdd_path)
+df = pd.read_sql_query("SELECT * FROM nutrition_data", con)
+con.close()
 
 # Créer un masque pour filtrer les données pertinentes
-mask_nutrition = df["valeur"].notna()
+mask_nutrition = df["value"].notna()
 
 # Appliquer le filtre et normaliser les noms des pays
 df = df[mask_nutrition].copy()
-df["zone"] = df["zone"].replace(country_mapping)
+df["area"] = df["area"].replace(country_mapping)
 
 # Layout principal
 app.layout = html.Div(
@@ -31,7 +35,7 @@ app.layout = html.Div(
         "fontFamily": "Arial"
     },
     children=[
-        html.H1("titre", style={"textAlign": "center", "color": "white", "marginBottom": "20px"}),
+        html.H1("Dashboard on Food Security Indicators", style={"textAlign": "center", "color": "white", "marginBottom": "20px"}),
         html.Div(
             style={
                 "position": "relative",
@@ -60,11 +64,11 @@ def update_map(selected_indicator, selected_year):
         return {}
     
     # Filtrer par année
-    filtered_df = df[df["année"] == selected_year].copy()
+    filtered_df = df[df["year"] == selected_year].copy()
     
     # Filtrer par indicateur sélectionné
-    indicator_mask = filtered_df["produit"] == selected_indicator
-    country_data = filtered_df[indicator_mask].groupby("zone")["valeur"].mean().reset_index()
+    indicator_mask = filtered_df["item"] == selected_indicator
+    country_data = filtered_df[indicator_mask].groupby("area")["value"].mean().reset_index()
         
     # Créer la carte en utilisant la fonction du composant map
     from src.components.map_component import create_choropleth
