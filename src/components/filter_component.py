@@ -2,7 +2,7 @@ from dash import html, dcc
 
 def create_year_options(df):
     # Crée les options pour le dropdown des années (une option par année unique dans la base de données)
-    return [{"label": str(year), "value": year} for year in sorted(df["année"].unique())]
+    return [{"label": str(year), "value": year} for year in sorted(df["year"].unique())]
 
 def create_indicator_options():
     """ 
@@ -12,12 +12,16 @@ def create_indicator_options():
     - Disponibilité alimentaire par habitant (kcal/personne/jour)
     """
     return [
-        {"label": "Prévalence de la sous alimentation", 
-         "value": "Prévalence de la sous-alimentation (%) (moyenne sur 3 ans)"},
-        {"label": "Population obèse", 
-         "value": "Nombre d'adultes (18 ans ou plus) obèses (millions)"},
-        {"label": "Disponibilité alimentaire", 
-         "value": "Disponibilité alimentaire par habitant utilisée dans l'estimation de la prévalence de la sous-alimentation (kcal/personne/jour)"}
+        {"label": "Prevalence of undernourishment", 
+         "value": "Prevalence of undernourishment (percent) (3-year average)"},
+        {"label": "Number of people undernourished", 
+         "value": "Number of people undernourished (million) (3-year average)"},
+        {"label": "Prevalence of obesity in the adult population", 
+         "value": "Prevalence of obesity in the adult population (18 years and older) (percent)"},
+        {"label": "Number of obese adults", 
+         "value": "Number of obese adults (18 years and older) (million)"},
+        {"label": "Dietary energy supply", 
+         "value": "Dietary energy supply used in the estimation of the prevalence of undernourishment (kcal/cap/day)"}
     ]
 
 def filter_component(df):
@@ -28,7 +32,7 @@ def filter_component(df):
         dcc.Dropdown(
             id="year-dropdown",
             options=create_year_options(df),
-            value=df["année"].min(),
+            value=df["year"].min(),
             style={"marginBottom": "20px", "color": "black"}
         ),
         # Dropdown pour sélectionner l'indicateur
@@ -36,7 +40,7 @@ def filter_component(df):
         dcc.Dropdown(
             id="indicator-dropdown",
             options=create_indicator_options(),
-            value="Nombre d'adultes (18 ans ou plus) obèses (millions)",
+            value="Number of obese adults (18 years and older) (million)",
             style={"color": "black"},
             multi=False
         )
