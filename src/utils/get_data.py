@@ -1,6 +1,8 @@
 # Script pour récupérer des données FAOSTAT via faostat.get_data_df
 
 import faostat
+import sqlite3
+import pandas as pd
 
 # Codes du jeu de données FAOSTAT 
 dataset = 'FS'
@@ -45,8 +47,16 @@ try:
 except Exception as e:
     print("Erreur lors du téléchargement :", e)
 
+# Suppression des anciennes données et sauvegarde des nouvelles données brutes sur une base locale sqlite3
+bdd_path = 'data/raw/faostat_data.db'
+conn = sqlite3.connect(bdd_path)
+df.to_sql('raw_data', conn, if_exists='replace', index=False)
+conn.close()
+print(f"Données sauvegardées dans la base de données : {bdd_path}")
+
+"""
 # Sauvegarde des données dans un fichier CSV dans le dossier data/raw
 output_file = 'data/raw/faostat_data.csv'
 df.to_csv(output_file, index=False)
 print(f"Données sauvegardées dans : {output_file}")
-
+"""
