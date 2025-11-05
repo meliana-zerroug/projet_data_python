@@ -8,21 +8,21 @@ def create_choropleth(country_data, selected_indicator, selected_year):
     # Création de la carte
     fig = px.choropleth(
         country_data,
-        locations="zone",
+        locations="Area",
         locationmode="country names",
-        color="valeur",
+        color="Value",
         scope="world",
         color_continuous_scale=[[0, "#ffffff"], [1, "#7efbdb"]],
         title=f"{selected_indicator} en {selected_year}",
-        hover_name="zone",
-        hover_data={"zone": False, "valeur": ":.1f"},
-        labels={"valeur": "Valeur"}
+        hover_name="Area",
+        hover_data={"Area": False, "Value": ":.1f"},
+        labels={"Value": "Value"}
     )
     
     # Personnalisation de la colorbar et du titre
     fig.update_layout(
         title=dict(
-            text="Carte mondiale", 
+            text="World Map of " + selected_indicator + " in " + str(selected_year), 
             y=1.0,
             x=0.5,
             xanchor='center',

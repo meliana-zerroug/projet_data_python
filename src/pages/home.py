@@ -15,15 +15,15 @@ app = Dash(__name__)
 #df = pd.read_csv("data/cleaned/clean_data.csv")
 bdd_path = "data/raw/faostat_data.db"
 con = sqlite3.connect(bdd_path)
-df = pd.read_sql_query("SELECT * FROM nutrition_data", con)
+df = pd.read_sql_query("SELECT * FROM raw_data", con)
 con.close()
 
 # Créer un masque pour filtrer les données pertinentes
-mask_nutrition = df["value"].notna()
+mask_nutrition = df["Value"].notna()
 
 # Appliquer le filtre et normaliser les noms des pays
 df = df[mask_nutrition].copy()
-df["area"] = df["area"].replace(country_mapping)
+df["Area"] = df["Area"].replace(country_mapping)
 
 # Layout principal
 app.layout = html.Div(
@@ -64,11 +64,11 @@ def update_map(selected_indicator, selected_year):
         return {}
     
     # Filtrer par année
-    filtered_df = df[df["year"] == selected_year].copy()
+    filtered_df = df[df["Year"] == selected_year].copy()
     
     # Filtrer par indicateur sélectionné
-    indicator_mask = filtered_df["item"] == selected_indicator
-    country_data = filtered_df[indicator_mask].groupby("area")["value"].mean().reset_index()
+    indicator_mask = filtered_df["Item"] == selected_indicator
+    country_data = filtered_df[indicator_mask].groupby("Area")["Value"].mean().reset_index()
         
     # Créer la carte en utilisant la fonction du composant map
     from src.components.map_component import create_choropleth
