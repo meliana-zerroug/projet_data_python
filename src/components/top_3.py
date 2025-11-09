@@ -30,21 +30,21 @@ def update_top_countries(df, selected_indicator, selected_year):
     
     # Filtrer les données
     filtered_df = df[
-        (df['Item'] == selected_indicator) & 
-        (df['Year'] == selected_year)
+        (df['item'] == selected_indicator) & 
+        (df['year'] == selected_year)
     ].copy()
     
     if filtered_df.empty:
         return "Aucune donnée disponible"
     
     # Trier par valeur décroissante et prendre le top 3
-    top_countries = filtered_df.nlargest(3, 'Value')[['Area', 'Value']]
+    top_countries = filtered_df.nlargest(3, 'value')[['area', 'value']]
     
     # Créer la liste formatée
     countries_list = []
     for i, (_, row) in enumerate(top_countries.iterrows(), 1):
-        country_name = row['Area']
-        value = row['Value']
+        country_name = row['area']
+        value = row['value']
         
         # Formater selon l'indicateur
         if "(%)" in selected_indicator:
