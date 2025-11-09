@@ -43,7 +43,7 @@ def extract_middle_year(s):
 # On applique les filtres de nettoyage sur le DataFrame
 df["year"] = df["year"].apply(extract_middle_year)
 df["item"] = df["item"].str.strip()
-df["value"] = pd.to_numeric(df["value"].str.replace(',', '.') if df["value"].dtype == "object" else df["value"], errors='coerce')
+df["value"] = pd.to_numeric(df["value"].str.replace(',', '.').replace('<', '') if df["value"].dtype == "object" else df["value"], errors='coerce')
 
 # Sauvegarde des données nettoyées dans un fichier CSV
 #df.to_csv('data/cleaned/clean_data.csv', index=False)

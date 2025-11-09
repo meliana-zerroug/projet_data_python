@@ -9,17 +9,17 @@ def prepare_trend_data(df):
     """
     # Définir les 2 indicateurs
     indicators = [
-        "Nombre d'adultes (18 ans ou plus) obèses (millions)",
-        "Nombre de personnes sous-alimentées (millions) (moyenne sur 3 ans)"
+        "Number of obese adults (18 years and older) (million)",
+        "Number of people undernourished (million) (3-year average)"
     ]
     
     trend_data = {}
     
     for indicator in indicators:
-        indicator_df = df[df['produit'] == indicator].copy()
+        indicator_df = df[df['item'] == indicator].copy()
         if not indicator_df.empty:
-            yearly_data = indicator_df.groupby('année')['valeur'].mean().reset_index()
-            yearly_data = yearly_data.sort_values('année')
+            yearly_data = indicator_df.groupby('year')['value'].mean().reset_index()
+            yearly_data = yearly_data.sort_values('year')
             trend_data[indicator] = yearly_data
     
     return trend_data
@@ -30,8 +30,8 @@ def create_trend_figure(trend_data):
     """
     # Noms simplifiés pour la légende
     display_names = {
-        "Nombre de personnes sous-alimentées (millions) (moyenne sur 3 ans)": "Personnes sous-alimentées (millions)",
-        "Nombre d'adultes (18 ans ou plus) obèses (millions)": "Adultes obèses (millions)"
+        "Number of people undernourished (million) (3-year average)": "Number of people undernourished (millions)",
+        "Number of obese adults (18 years and older) (million)": "Number of obese adults (millions)"
     }
     
     # Couleurs pour chaque courbe
@@ -42,8 +42,8 @@ def create_trend_figure(trend_data):
     for i, (indicator, data) in enumerate(trend_data.items()):
         if not data.empty:
             fig.add_trace(go.Scatter(
-                x=data['année'],
-                y=data['valeur'],
+                x=data['year'],
+                y=data['value'],
                 mode='lines+markers',
                 line=dict(color=colors[i], width=2),
                 marker=dict(size=6, color=colors[i]),
@@ -52,9 +52,9 @@ def create_trend_figure(trend_data):
     
     # Mise en forme
     fig.update_layout(
-        title="Évolution des Indicateurs de Malnutrition dans le Monde",
-        xaxis_title="Année",
-        yaxis_title="Valeur",
+        title="Change in Indicators in bad nutrition in the world",
+        xaxis_title="year",
+        yaxis_title="value",
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white',

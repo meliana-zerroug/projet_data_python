@@ -2,7 +2,7 @@ from dash import html, dcc
 
 def create_year_options(df):
     # Crée les options pour le dropdown des années (une option par année unique dans la base de données)
-    return [{"label": str(year), "value": year} for year in sorted(df["Year"].unique())]
+    return [{"label": str(year), "value": year} for year in sorted(df["year"].unique())]
 
 def create_indicator_options():
     """ 
@@ -32,7 +32,7 @@ def filter_component(df):
         dcc.Dropdown(
             id="year-dropdown",
             options=create_year_options(df),
-            value=df["Year"].min(),
+            value=df["year"].min(),
             style={"marginBottom": "20px", "color": "black"}
         ),
         # Dropdown pour sélectionner l'indicateur
