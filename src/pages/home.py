@@ -6,6 +6,7 @@ from src.components.filter_component import filter_component
 from src.components.map_component import map_component
 from src.components.trend_line import trend_line_component
 from src.utils.country_mapping import country_mapping
+from src.components.top_3 import top_countries_component, update_top_countries
 
 
 # Initialisation de l'application Dash 
@@ -47,7 +48,8 @@ app.layout = html.Div(
             children=[
                 filter_component(df),
                 map_component(),
-                trend_line_component(df)
+                trend_line_component(df),
+                top_countries_component(df)
             ]
         )
     ]
@@ -75,6 +77,16 @@ def update_map(selected_indicator, selected_year):
     fig = create_choropleth(country_data, selected_indicator, selected_year)
 
     return fig
+
+# Callback pour mettre à jour le top 3 des pays
+@app.callback(
+    Output("top-countries-list", "children"),
+    [Input("indicator-dropdown", "value"),
+     Input("year-dropdown", "value")]
+)
+
+def update_top_countries_list(selected_indicator, selected_year):
+    return update_top_countries(df, selected_indicator, selected_year)
 
 if __name__ == "__main__":
     app.run(debug=True)
