@@ -1,0 +1,14 @@
+# Sert à créer le site
+dash
+
+# Permet de gérer les données
+pandas
+
+# Permet de faire des calculs
+numpy
+
+# Permet de créer des graphiques
+plotly
+
+# faostat : données FAO
+faostat
