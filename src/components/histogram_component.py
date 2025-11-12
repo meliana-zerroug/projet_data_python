@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
-def prepare_histo_data(df, year=2020, bins=20, gdp_bins=None):
+def prepare_histo_data(df, selected_year, bins=20, gdp_bins=None):
     """
     Prépare un DataFrame agrégé par classe de PIB (gdp per capita) pour l'année donnée.
     Retour attendu : colonnes ['gdp_bin','gdp_per_capita_mean','obese_million','undernourished_million']
@@ -14,10 +14,13 @@ def prepare_histo_data(df, year=2020, bins=20, gdp_bins=None):
     under_item = "Number of people undernourished (million) (3-year average)"
     gdp_item = "Gross domestic product per capita, PPP, (constant 2021 international $)"
 
+    # détecter colonne zone/pays
+    if 'area' not in df.columns or 'item' not in df.columns or 'value' not in df.columns or 'year' not in df.columns:
+        return pd.DataFrame(columns=['gdp_bin','gdp_per_capita_mean','obese_million','undernourished_million'])
 
     subset = df.copy()
     subset['year'] = subset['year'].astype(int)
-    subset = subset[subset['year'] == int(year)]
+    subset = subset[subset['year'] == int(selected_year)]
 
     if subset.empty:
         return pd.DataFrame(columns=['gdp_bin','gdp_per_capita_mean','obese_million','undernourished_million'])
@@ -52,7 +55,7 @@ def prepare_histo_data(df, year=2020, bins=20, gdp_bins=None):
             pivot['gdp_bin'] = pd.cut(pivot['gdp_per_capita'], bins=bins)
 
     # agréger par bin : somme des personnes (millions) et moyenne du PIB
-    agg = pivot.groupby('gdp_bin', observed=True).agg(
+    agg = pivot.groupby('gdp_bin').agg(
         obese_million=('obese_million', 'sum'),
         undernourished_million=('undernourished_million', 'sum'),
         gdp_per_capita_mean=('gdp_per_capita', 'mean'),
@@ -73,7 +76,7 @@ def prepare_histo_data(df, year=2020, bins=20, gdp_bins=None):
 
     return histo_df
 
-def create_histo_figure(histo_df, year=2020, gdp_bins=[0,1000,5000,10000,20000,50000,1e7]):
+def create_histo_figure(histo_df, selected_year, gdp_bins=[0,1000,5000,10000,20000,50000,1e7]):
     """
     Crée un histogramme où l'abscisse est la classe de PIB (gdp_bin -> label),
     les barres montrent le total de personnes sous-alimentées / obèses (millions) par classe,
@@ -109,7 +112,7 @@ def create_histo_figure(histo_df, year=2020, gdp_bins=[0,1000,5000,10000,20000,5
     ))
 
     fig.update_layout(
-        title="Population undernourished and obese by GDP (" + str(year) + ")",
+        title="Population undernourished and obese by GDP (" + str(selected_year) + ")",
         xaxis_title="GDP by person",
         yaxis=dict(title="Population (millions)"),
         barmode='group',
@@ -137,15 +140,11 @@ def create_histo_figure(histo_df, year=2020, gdp_bins=[0,1000,5000,10000,20000,5
 
 def histo_component(df):
     """
-    Composant principal pour l'histogramme (année 2020)
+    Composant principal pour l'histogramme - retourne juste le conteneur avec un graphique vide
+    Le contenu sera mis à jour par callback
     """
-    year = 2020
-    gdp_bins = [0, 2500, 5000, 7500, 10000, 15000, 20000, 50000, 1e7]
-    histo_data = prepare_histo_data(df, year, gdp_bins)
-    fig = create_histo_figure(histo_data, year, gdp_bins)
-
     return html.Div([
-        dcc.Graph(figure=fig)
+        dcc.Graph(id="histogram-graph", figure={})
     ],
     style={
             "width": "620px",

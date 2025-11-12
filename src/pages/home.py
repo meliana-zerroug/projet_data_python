@@ -5,7 +5,7 @@ import sqlite3
 from src.components.filter_component import filter_component
 from src.components.map_component import map_component
 from src.components.trend_line import trend_line_component
-from src.components.histogram_component import histo_component
+from src.components.histogram_component import histo_component, prepare_histo_data, create_histo_figure
 from src.components.top_3 import top_countries_component, update_top_countries
 
 
@@ -87,6 +87,24 @@ def update_map(selected_indicator, selected_year):
 
 def update_top_countries_list(selected_indicator, selected_year):
     return update_top_countries(df, selected_indicator, selected_year)
+
+#Callback pour mettre à jour l'histogramme en fonction de l'année 
+@app.callback(
+    Output("histogram-graph", "figure"),
+    [Input("year-dropdown", "value")]
+)
+def update_histogram(selected_year):
+    if not selected_year:
+        return {}
+    
+    # Définir les classes de PIB pour l'histogramme
+    gdp_bins = [0, 2500, 5000, 7500, 10000, 15000, 20000, 50000, 1e7]
+    
+    # Préparer les données et créer la figure
+    histo_data = prepare_histo_data(df, selected_year, gdp_bins=gdp_bins)
+    fig = create_histo_figure(histo_data, selected_year, gdp_bins)
+    
+    return fig
 
 if __name__ == "__main__":
     app.run(debug=True)
