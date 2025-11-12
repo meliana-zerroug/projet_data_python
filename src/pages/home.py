@@ -25,7 +25,6 @@ mask_nutrition = df["value"].notna()
 
 # Appliquer le filtre et normaliser les noms des pays
 df = df[mask_nutrition].copy()
-df["area"] = df["area"].replace(country_mapping)
 
 # Layout principal
 app.layout = html.Div(
