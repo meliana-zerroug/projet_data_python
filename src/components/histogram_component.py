@@ -55,7 +55,7 @@ def prepare_histo_data(df, selected_year, bins=20, gdp_bins=None):
             pivot['gdp_bin'] = pd.cut(pivot['gdp_per_capita'], bins=bins)
 
     # agréger par bin : somme des personnes (millions) et moyenne du PIB
-    agg = pivot.groupby('gdp_bin').agg(
+    agg = pivot.groupby('gdp_bin', observed=False).agg(
         obese_million=('obese_million', 'sum'),
         undernourished_million=('undernourished_million', 'sum'),
         gdp_per_capita_mean=('gdp_per_capita', 'mean'),
@@ -119,7 +119,7 @@ def create_histo_figure(histo_df, selected_year, gdp_bins=[0,1000,5000,10000,200
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white',
-        height=500,
+        height=355.3,
         margin=dict(l=60, r=80, t=80, b=150),
         legend=dict(
             bgcolor='rgba(0,0,0,0.5)',

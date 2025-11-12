@@ -58,7 +58,7 @@ def create_trend_figure(trend_data):
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white',
-        height=400,
+        height=355.3,
         margin=dict(l=50, r=50, t=50, b=50),
         legend=dict(
             bgcolor='rgba(0,0,0,0.5)',
@@ -97,5 +97,5 @@ def trend_line_component(df):
             "position": "absolute",
             "left": "750px",
             "top": "485px",
-            "height": "355.3px",
+            "height": "400.3px",
     })

@@ -3,6 +3,7 @@
 import faostat
 import sqlite3
 import pandas as pd
+import requests
 
 # Codes du jeu de données FAOSTAT 
 dataset = 'FS'
@@ -47,10 +48,26 @@ try:
 except Exception as e:
     print("Erreur lors du téléchargement :", e)
 
+# ======================
+# Récupération des données de population totale depuis l'API de la Banque Mondiale
+# Paramètres
+indicator = "SL.TLF.TOTL.IN"
+date_range = "2000:2023"
+url = f"https://api.worldbank.org/v2/country/all/indicator/{indicator}?date={date_range}&format=json&per_page=20000"
+
+# Requête
+resp = requests.get(url)
+resp.raise_for_status()
+data = resp.json()
+
+# On transforme en DataFrame
+df2 = pd.json_normalize(data[1])
+
 # Suppression des anciennes données et sauvegarde des nouvelles données brutes sur une base locale sqlite3
 bdd_path = 'data/raw/faostat_data.db'
 conn = sqlite3.connect(bdd_path)
 df.to_sql('raw_data', conn, if_exists='replace', index=False)
+df2.to_sql('raw_pop_tot', conn, if_exists='replace', index=False)
 conn.close()
 print(f"Données sauvegardées dans la base de données : {bdd_path}")
 

@@ -11,6 +11,7 @@ import sqlite3
 bdd_path = 'data/raw/faostat_data.db'
 conn = sqlite3.connect(bdd_path)
 df = pd.read_sql_query("SELECT * FROM raw_data", conn)
+df_pop = pd.read_sql_query("SELECT * FROM raw_pop_tot", conn)
 
 #On supprime les colonnes inutiles
 colonnes_drop = ["Element","Element Code","Domain","Domain Code"] 
@@ -21,8 +22,6 @@ df = df.dropna(subset=["Value"])
 
 #On standardise les noms de colonnes
 df.columns = df.columns.str.lower().str.replace(' ', '_')
-
-print(df.head())
 
 #On va ensuite nettoyer les données avec du texte 
 #On définit les colonnes textuelles à nettoyer
@@ -90,9 +89,24 @@ exclude_items = [
 ]
 df = df[~(df['area'].isin(exclude_items))]
 
+# Garder les colonnes utiles
+df_pop = df_pop[['country.value','date','value']]
+df_pop = df_pop.rename(columns={
+    'country.value':'country',
+    'date':'year',
+    'value':'value'
+})
+
+# Convertir l’année en int, la valeur en float
+df_pop['year'] = df_pop['year'].astype(int)
+df_pop['value'] = pd.to_numeric(df_pop['value'], errors='coerce')
+
+
 # Sauvegarde des données nettoyées dans un fichier CSV
 #df.to_csv('data/cleaned/clean_data.csv', index=False)
 
 # Sauvegarde des données nettoyées dans une base sqlite3
 df.to_sql('clean_data', conn, if_exists='replace', index=False)
+df_pop.to_sql('clean_pop_tot', conn, if_exists='replace', index=False)
 conn.close()
+print("Données nettoyées sauvegardées dans la base de données : data/raw/faostat_data.db")
