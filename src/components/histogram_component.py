@@ -14,9 +14,6 @@ def prepare_histo_data(df, year=2020, bins=20, gdp_bins=None):
     under_item = "Number of people undernourished (million) (3-year average)"
     gdp_item = "Gross domestic product per capita, PPP, (constant 2021 international $)"
 
-    # détecter colonne zone/pays
-    if 'area' is None or 'item' not in df.columns or 'value' not in df.columns or 'year' not in df.columns:
-        return pd.DataFrame(columns=['gdp_bin','gdp_per_capita_mean','obese_million','undernourished_million'])
 
     subset = df.copy()
     subset['year'] = subset['year'].astype(int)
@@ -55,7 +52,7 @@ def prepare_histo_data(df, year=2020, bins=20, gdp_bins=None):
             pivot['gdp_bin'] = pd.cut(pivot['gdp_per_capita'], bins=bins)
 
     # agréger par bin : somme des personnes (millions) et moyenne du PIB
-    agg = pivot.groupby('gdp_bin').agg(
+    agg = pivot.groupby('gdp_bin', observed=True).agg(
         obese_million=('obese_million', 'sum'),
         undernourished_million=('undernourished_million', 'sum'),
         gdp_per_capita_mean=('gdp_per_capita', 'mean'),
