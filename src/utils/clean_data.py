@@ -45,6 +45,51 @@ df["year"] = df["year"].apply(extract_middle_year)
 df["item"] = df["item"].str.strip()
 df["value"] = pd.to_numeric(df["value"].str.replace(',', '.').replace('<', '') if df["value"].dtype == "object" else df["value"], errors='coerce')
 
+exclude_items = [
+    "World",
+    "Europe",
+    "Eastern Europe",
+    "Western Europe",
+    "Northern Europe",
+    "Southern Europe",
+    "Asia",
+    "Eastern Asia",
+    "Eastern Asia and South-eastern Asia",
+    "Southern Asia",
+    "Southern Asia (excluding India)",
+    "South-eastern Asia",
+    "Central Asia and Southern Asia",
+    "Central Asia",
+    "Western Asia",
+    "Africa",
+    "Eastern Africa",
+    "Middle Africa",
+    "Northern Africa",
+    "Southern Africa",
+    "Western Africa",
+    "Western Asia and Northern Africa",
+    "Sub-Saharan Africa (including Sudan)",
+    "Sub-Saharan Africa",
+    "Northern Africa (excluding Sudan)",
+    "Latin America and the Caribbean",
+    "Northern America",
+    "Central America",
+    "South America",
+    "Northern America and Europe",
+    "Oceania",
+    "Oceania excluding Australia and New Zealand",
+    "European Union (27)",
+    "High-income economies",
+    "Low-income economies",
+    "Lower-middle-income economies",
+    "Upper-middle-income economies",
+    "Least Developed Countries (LDCs)",
+    "Small Island Developing States (SIDS)",
+    "Land Locked Developing Countries (LLDCs)",
+    "Low Income Food Deficit Countries (LIFDCs)"
+]
+df = df[~(df['area'].isin(exclude_items))]
+
 # Sauvegarde des données nettoyées dans un fichier CSV
 #df.to_csv('data/cleaned/clean_data.csv', index=False)
 

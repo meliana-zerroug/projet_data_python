@@ -6,7 +6,6 @@ from src.components.filter_component import filter_component
 from src.components.map_component import map_component
 from src.components.trend_line import trend_line_component
 from src.components.histogram_component import histo_component
-from src.utils.country_mapping import country_mapping
 from src.components.top_3 import top_countries_component, update_top_countries
 
 
