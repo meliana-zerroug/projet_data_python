@@ -7,6 +7,7 @@ from src.components.map_component import map_component
 from src.components.trend_line import trend_line_component
 from src.components.histogram_component import histo_component, prepare_histo_data, create_histo_figure
 from src.components.top_3 import top_countries_component, update_top_countries
+from src.components.filled_area import filled_area_component, create_filled_area_figure
 
 
 # Initialisation de l'application Dash 
@@ -17,6 +18,7 @@ app = Dash(__name__)
 bdd_path = "data/raw/faostat_data.db"
 con = sqlite3.connect(bdd_path)
 df = pd.read_sql_query("SELECT * FROM clean_data", con)
+df_pop = pd.read_sql_query("SELECT * FROM clean_pop_tot", con)
 con.close()
 
 # Créer un masque pour filtrer les données pertinentes
@@ -49,7 +51,8 @@ app.layout = html.Div(
                 map_component(),
                 trend_line_component(df),
                 top_countries_component(df),
-                histo_component(df)
+                histo_component(df),
+                filled_area_component(df)
             ]
         )
     ]
@@ -104,6 +107,20 @@ def update_histogram(selected_year):
     histo_data = prepare_histo_data(df, selected_year, gdp_bins=gdp_bins)
     fig = create_histo_figure(histo_data, selected_year, gdp_bins)
     
+    return fig
+
+# Callback pour mettre à jour le filled area plot en fonction de l'année
+@app.callback(
+    Output("filled-area-graph", "figure"),
+    [Input("year-dropdown", "value")]
+)
+def update_filled_area(selected_year):
+    if not selected_year:
+        return {}
+    
+    # Définir les mêmes intervalles de PIB que l'histogramme
+    gdp_bins = [0, 2500, 5000, 7500, 10000, 15000, 20000, 50000, 1e7]
+    fig = create_filled_area_figure(df, df_pop, selected_year, gdp_bins)
     return fig
 
 if __name__ == "__main__":
