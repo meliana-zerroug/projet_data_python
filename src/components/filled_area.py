@@ -23,7 +23,7 @@ def filled_area_component(df):
             "position": "absolute",
             "left": "0px",
             "top": "920px",
-            "height": "400px"
+            "height": "450px"
         },
         children=[
             dcc.Graph(
@@ -45,7 +45,7 @@ def prepare_filled_area_data(df, df_pop, selected_year, gdp_bins=None):
         gdp_bins: Liste d'intervalles de PIB (ex: [0, 2500, 5000, 10000, 50000, 1e7])
     
     Returns:
-        DataFrame avec les colonnes gdp_bin_mid, obese_million, undernourished_million
+        DataFrame avec les colonnes gdp_bin_mid, obese_million, undernourished_million, population_million
     """
     gdp_item = "Gross domestic product per capita, PPP, (constant 2021 international $)"
     obese_item = "Number of obese adults (18 years and older) (million)"
@@ -62,7 +62,7 @@ def prepare_filled_area_data(df, df_pop, selected_year, gdp_bins=None):
     subset = df[df['year'] == selected_year_str].copy()
     
     if subset.empty:
-        return pd.DataFrame(columns=['gdp_bin_mid', 'obese_million', 'undernourished_million'])
+        return pd.DataFrame(columns=['gdp_bin_mid', 'obese_million', 'undernourished_million', 'population_million'])
     
     # Créer un pivot pour avoir toutes les données
     pivot = subset.pivot_table(index='area', columns='item', values='value', aggfunc='mean').reset_index()
@@ -89,7 +89,22 @@ def prepare_filled_area_data(df, df_pop, selected_year, gdp_bins=None):
     pivot = pivot.dropna(subset=['gdp_per_capita'])
     
     if pivot.empty:
-        return pd.DataFrame(columns=['gdp_bin_mid', 'obese_million', 'undernourished_million'])
+        return pd.DataFrame(columns=['gdp_bin_mid', 'obese_million', 'undernourished_million', 'population_million'])
+    
+    # --- Jointure avec df_pop pour récupérer la population par pays (année sélectionnée) ---
+    pop_df = df_pop.copy()
+    pop_df['year'] = pop_df['year'].astype(str)
+    pop_df = pop_df[pop_df['year'] == selected_year_str].copy()
+
+    pop_df = pop_df[['area', 'value']].copy()
+    pop_df = pop_df.groupby('area', as_index=False).agg({'value': 'mean'}).rename(columns={'value': 'population'})
+    pop_df['population'] = pd.to_numeric(pop_df['population'], errors='coerce').fillna(0.0)
+    
+    # Merge population par pays dans le pivot
+    pivot = pivot.merge(pop_df, on='area', how='left')
+    pivot['population'] = pd.to_numeric(pivot['population'], errors='coerce').fillna(0.0)
+    # Convertir la population en millions pour cohérence avec les autres colonnes
+    pivot['population_million'] = pivot['population'] / 1e6
     
     # Créer des intervalles de PIB
     pivot['gdp_bin'] = pd.cut(pivot['gdp_per_capita'], bins=gdp_bins, include_lowest=True)
@@ -97,10 +112,11 @@ def prepare_filled_area_data(df, df_pop, selected_year, gdp_bins=None):
     # Calculer le point milieu de chaque intervalle pour l'affichage
     pivot['gdp_bin_mid'] = pivot['gdp_bin'].apply(lambda x: (x.left + x.right) / 2 if pd.notna(x) else None)
     
-    # Agréger par intervalle de PIB (somme des personnes)
-    aggregated = pivot.groupby('gdp_bin_mid').agg({
+    # Agréger par intervalle de PIB (somme des personnes et de la population en millions)
+    aggregated = pivot.groupby('gdp_bin_mid', observed=False).agg({
         'obese_million': 'sum',
-        'undernourished_million': 'sum'
+        'undernourished_million': 'sum',
+        'population_million': 'sum'
     }).reset_index()
     
     # Trier par PIB
@@ -185,10 +201,25 @@ def create_filled_area_figure(df, df_pop, selected_year, gdp_bins=None):
                       '<extra></extra>'
     ))
     
+    # Trace pour la population totale 
+    fig.add_trace(go.Scatter(
+        x=x_labels[:len(data)],
+        y=data['population_million'],
+        fill='tozeroy',
+        mode='lines+markers',
+        name='Total Population (millions)',
+        line=dict(color="#ffcc88", width=3, shape='spline'),
+        marker=dict(size=8, color='#ffcc88'),
+        fillcolor='rgba(235, 184, 124, 0.3)',
+        hovertemplate='GDP: %{x} $/hab<br>' +
+                      'Total Population: %{y:,.2f} M<br>' +
+                      '<extra></extra>'
+    ))
+    
     # Mise en forme du graphique
     fig.update_layout(
         title=dict(
-            text=f'Obesity and Undernourishment by GDP ({selected_year})',
+            text=f'Total Population, Obesity and Undernourishment by GDP ({selected_year})',
             font=dict(size=16, color='white'),
             x=0.5,
             xanchor='center'
@@ -200,14 +231,14 @@ def create_filled_area_figure(df, df_pop, selected_year, gdp_bins=None):
         paper_bgcolor='rgba(0,0,0,0)',
         font=dict(family="Arial", size=12, color='white'),
         margin=dict(l=80, r=40, t=60, b=60),
-        height=380,
+        height=450,
         showlegend=True,
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
+            y=-1,
+            xanchor="center",
+            x=0.5,
             bgcolor='rgba(0,0,0,0.5)',
             bordercolor='white',
             borderwidth=1,

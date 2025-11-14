@@ -101,7 +101,7 @@ def update_histogram(selected_year):
         return {}
     
     # Définir les classes de PIB pour l'histogramme
-    gdp_bins = [0, 2500, 5000, 7500, 10000, 15000, 20000, 50000, 1e7]
+    gdp_bins = [0, 2500, 5000, 7500, 10000, 15000, 20000, 50000, 75000, 1e6]
     
     # Préparer les données et créer la figure
     histo_data = prepare_histo_data(df, selected_year, gdp_bins=gdp_bins)
@@ -119,7 +119,7 @@ def update_filled_area(selected_year):
         return {}
     
     # Définir les mêmes intervalles de PIB que l'histogramme
-    gdp_bins = [0, 2500, 5000, 7500, 10000, 15000, 20000, 50000, 1e7]
+    gdp_bins = [0, 2500, 5000, 7500, 10000, 15000, 20000, 50000, 75000, 1e6]
     fig = create_filled_area_figure(df, df_pop, selected_year, gdp_bins)
     return fig
 

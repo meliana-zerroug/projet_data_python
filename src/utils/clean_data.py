@@ -92,7 +92,7 @@ df = df[~(df['area'].isin(exclude_items))]
 # Garder les colonnes utiles
 df_pop = df_pop[['country.value','date','value']]
 df_pop = df_pop.rename(columns={
-    'country.value':'country',
+    'country.value':'area',
     'date':'year',
     'value':'value'
 })

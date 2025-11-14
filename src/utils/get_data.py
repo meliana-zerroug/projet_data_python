@@ -51,7 +51,7 @@ except Exception as e:
 # ======================
 # Récupération des données de population totale depuis l'API de la Banque Mondiale
 # Paramètres
-indicator = "SL.TLF.TOTL.IN"
+indicator = "SP.POP.TOTL"
 date_range = "2000:2023"
 url = f"https://api.worldbank.org/v2/country/all/indicator/{indicator}?date={date_range}&format=json&per_page=20000"
 
@@ -62,6 +62,7 @@ data = resp.json()
 
 # On transforme en DataFrame
 df2 = pd.json_normalize(data[1])
+print(df2.head())
 
 # Suppression des anciennes données et sauvegarde des nouvelles données brutes sur une base locale sqlite3
 bdd_path = 'data/raw/faostat_data.db'

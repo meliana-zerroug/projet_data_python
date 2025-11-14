@@ -89,7 +89,7 @@ def create_histo_figure(histo_df, selected_year, gdp_bins=[0,1000,5000,10000,200
         return fig
 
     df = histo_df.copy()
-    x = [str(gdp_bins[i]) + " - " + str(gdp_bins[i+1]) for i in range(len(gdp_bins) - 2)]                 # labels lisibles (ex: "1 234")
+    x = [str(gdp_bins[i]) + " - " + str(gdp_bins[i+1]) for i in range(len(gdp_bins) - 1)]                 # labels lisibles (ex: "1 234")
     obese_y = df['obese_million'].tolist()
     under_y = df['undernourished_million'].tolist()
     gdp_y = df['gdp_per_capita_mean'].tolist()
