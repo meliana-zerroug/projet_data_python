@@ -8,7 +8,7 @@ from src.components.trend_line import trend_line_component
 from src.components.histogram_component import histo_component, prepare_histo_data, create_histo_figure
 from src.components.top_3 import top_countries_component, update_top_countries
 from src.components.filled_area import filled_area_component, create_filled_area_figure
-
+from src.utils.clean_data import clean_data
 
 # Initialisation de l'application Dash 
 app = Dash(__name__)
@@ -16,6 +16,15 @@ app = Dash(__name__)
 # Load data
 bdd_path = "data/faostat_data.db"
 con = sqlite3.connect(bdd_path)
+
+cur = con.cursor()
+cur.execute(
+    "SELECT name FROM sqlite_master WHERE type='table';"
+)
+trouvees = {row[0] for row in cur.fetchall()}
+if 'clean_data' not in trouvees or 'clean_pop_tot' not in trouvees:
+    clean_data()
+
 df = pd.read_sql_query("SELECT * FROM clean_data", con)
 df_pop = pd.read_sql_query("SELECT * FROM clean_pop_tot", con)
 con.close()
