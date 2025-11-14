@@ -8,7 +8,7 @@ import sqlite3
 #df = pd.read_csv('data/raw/rawdata.csv')
 
 # Importation des données depuis la base sqlite3
-bdd_path = 'data/raw/faostat_data.db'
+bdd_path = 'data/faostat_data.db'
 conn = sqlite3.connect(bdd_path)
 df = pd.read_sql_query("SELECT * FROM raw_data", conn)
 df_pop = pd.read_sql_query("SELECT * FROM raw_pop_tot", conn)
@@ -101,12 +101,8 @@ df_pop = df_pop.rename(columns={
 df_pop['year'] = df_pop['year'].astype(int)
 df_pop['value'] = pd.to_numeric(df_pop['value'], errors='coerce')
 
-
-# Sauvegarde des données nettoyées dans un fichier CSV
-#df.to_csv('data/cleaned/clean_data.csv', index=False)
-
 # Sauvegarde des données nettoyées dans une base sqlite3
 df.to_sql('clean_data', conn, if_exists='replace', index=False)
 df_pop.to_sql('clean_pop_tot', conn, if_exists='replace', index=False)
 conn.close()
-print("Données nettoyées sauvegardées dans la base de données : data/raw/faostat_data.db")
+print("Données nettoyées sauvegardées dans la base de données : data/faostat_data.db")

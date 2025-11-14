@@ -14,8 +14,7 @@ from src.components.filled_area import filled_area_component, create_filled_area
 app = Dash(__name__)
 
 # Load data
-#df = pd.read_csv("data/cleaned/clean_data.csv")
-bdd_path = "data/raw/faostat_data.db"
+bdd_path = "data/faostat_data.db"
 con = sqlite3.connect(bdd_path)
 df = pd.read_sql_query("SELECT * FROM clean_data", con)
 df_pop = pd.read_sql_query("SELECT * FROM clean_pop_tot", con)
