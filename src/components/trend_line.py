@@ -18,7 +18,7 @@ def prepare_trend_data(df):
     for indicator in indicators:
         indicator_df = df[df['item'] == indicator].copy()
         if not indicator_df.empty:
-            yearly_data = indicator_df.groupby('year')['value'].mean().reset_index()
+            yearly_data = indicator_df.groupby('year')['value'].sum().reset_index()
             yearly_data = yearly_data.sort_values('year')
             trend_data[indicator] = yearly_data
     
