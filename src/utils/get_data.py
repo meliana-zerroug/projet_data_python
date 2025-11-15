@@ -68,7 +68,7 @@ def get_data():
     df2 = pd.json_normalize(data[1])
 
     # Suppression des anciennes données et sauvegarde des nouvelles données brutes sur une base locale sqlite3
-    bdd_path = 'data/faostat_data.db'
+    bdd_path = 'faostat_data.db'
     conn = sqlite3.connect(bdd_path)
     df.to_sql('raw_data', conn, if_exists='replace', index=False)
     df2.to_sql('raw_pop_tot', conn, if_exists='replace', index=False)

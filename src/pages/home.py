@@ -14,7 +14,7 @@ from src.utils.clean_data import clean_data
 app = Dash(__name__)
 
 # Load data
-bdd_path = "data/faostat_data.db"
+bdd_path = "faostat_data.db"
 con = sqlite3.connect(bdd_path)
 
 cur = con.cursor()

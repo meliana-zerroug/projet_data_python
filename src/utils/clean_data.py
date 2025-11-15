@@ -7,7 +7,7 @@ def clean_data():
     Nettoie les données brutes téléchargées et les sauvegarde dans une base de données sqlite3
     """ 
     # Conexion à la base de données
-    bdd_path = 'data/faostat_data.db'
+    bdd_path = 'faostat_data.db'
     conn = sqlite3.connect(bdd_path)
 
     # Vérification de l'existence des tables raw_data et raw_pop_tot
