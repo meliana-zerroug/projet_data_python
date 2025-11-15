@@ -8,7 +8,9 @@ def create_indicator_options():
     """ 
     Crée les options pour le dropdown des indicateurs :
     - Prévalence de la sous alimentation (%)
-    - Population obèse (millions)
+    - Nombre de personnes sous-alimentées (millions)
+    - Prévalence de l'obésité chez les adultes (%)
+    - Nombre de personnes obèse (millions)
     - Disponibilité alimentaire par habitant (kcal/personne/jour)
     """
     return [
@@ -33,7 +35,7 @@ def filter_component(df):
             id="year-dropdown",
             options=create_year_options(df),
             value=df["year"].min(),
-            style={"marginBottom": "20px", "color": "black"}
+            style={"marginBottom": "20px ","color": "white"}
         ),
         # Dropdown pour sélectionner l'indicateur
         html.Label("Select an indicator", style={"color": "white", "marginBottom": "10px"}),
@@ -47,13 +49,13 @@ def filter_component(df):
     ],
     # Styles pour le composant filtre
     style={
-        "width": "225.7px",
+        "width": "230px",
         "backgroundColor": "#000000",
         "padding": "15px",
         "borderRadius": "0 10px 10px 0",
         "border": "1px solid white",
         "borderLeft": "none",
-        "height": "355.2px",
+        "height": "400px",
         "position": "absolute",
         "left": "0px",
         "top": "40px",

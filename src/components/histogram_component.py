@@ -101,14 +101,16 @@ def create_histo_figure(histo_df, selected_year, gdp_bins=[0,1000,5000,10000,200
         y=under_y,
         name='Undernourished (millions)',
         marker_color='#7efbdb',
-        hovertemplate='GDP: %{x} $/hab<br>Undernourished: %{y:.2f} M'
+        hovertemplate='GDP: %{x} $/hab<br>Undernourished: %{y:.2f} M' +
+                      '<extra></extra>'
     ))
     fig.add_trace(go.Bar(
         x=x,
         y=obese_y,
         name='Obese adults (millions)',
         marker_color='#7ed957',
-        hovertemplate='GDP: %{x} $/hab<br>Obese: %{y:.2f} M'
+        hovertemplate='GDP: %{x} $/hab<br>Obese: %{y:.2f} M' +
+                      '<extra></extra>'
     ))
 
     fig.update_layout(
@@ -147,7 +149,7 @@ def histo_component(df):
         dcc.Graph(id="histogram-graph", figure={})
     ],
     style={
-            "width": "620px",
+            "width": "660px",
             "backgroundColor": "#000000",
             "padding": "10px",
             "borderRadius": "10px",
@@ -155,5 +157,5 @@ def histo_component(df):
             "position": "absolute",
             "left": "0px",
             "top": "485px",
-            "height": "355.3px",
+            "height": "400px",
     })

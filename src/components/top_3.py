@@ -16,9 +16,9 @@ def top_countries_component(df):
         "borderRadius": "10px",
         "border": "1px solid white",
         "position": "absolute",
-        "left": "370px",
+        "left": "270px",
         "top": "40px",
-        "height": "345px",
+        "height": "400px",
     })
 
 def update_top_countries(df, selected_indicator, selected_year):
@@ -47,10 +47,10 @@ def update_top_countries(df, selected_indicator, selected_year):
         value = row['value']
         
         # Formater selon l'indicateur
-        if "(%)" in selected_indicator:
-            value_text = f"{value:.1f}%"
-        elif "millions" in selected_indicator:
-            value_text = f"{value:.1f}M"
+        if "Prevalence" in selected_indicator:
+            value_text = f"{value:.1f} %"
+        elif "Number" in selected_indicator:
+            value_text = f"{value:.1f} M"
         else:
             value_text = f"{value:.1f}"
         

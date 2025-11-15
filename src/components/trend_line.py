@@ -47,18 +47,20 @@ def create_trend_figure(trend_data):
                 mode='lines+markers',
                 line=dict(color=colors[i], width=2),
                 marker=dict(size=6, color=colors[i]),
-                name=display_names[indicator]
+                name=display_names[indicator] ,
+                hovertemplate=display_names[indicator] + ' : %{y:.2f} in %{x}' +
+                      '<extra></extra>'
             ))
     
     # Mise en forme
     fig.update_layout(
         title="Change in Indicators in bad nutrition in the world",
-        xaxis_title="year",
-        yaxis_title="value",
+        xaxis_title="Year",
+        yaxis_title="Number of people (millions)",
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
         font_color='white',
-        height=355.3,
+        height=370,
         margin=dict(l=50, r=50, t=50, b=50),
         legend=dict(
             bgcolor='rgba(0,0,0,0.5)',
@@ -89,13 +91,13 @@ def trend_line_component(df):
         dcc.Graph(figure=fig)
     ],
     style={
-            "width": "491.5px",
+            "width": "550px",
             "backgroundColor": "#000000",
             "padding": "10px",
             "borderRadius": "10px",
             "border": "1px solid white",
             "position": "absolute",
-            "left": "750px",
+            "left": "700px",
             "top": "485px",
-            "height": "400.3px",
+            "height": "400px",
     })

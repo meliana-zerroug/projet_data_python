@@ -16,14 +16,14 @@ def create_choropleth(country_data, selected_indicator, selected_year):
         title=f"{selected_indicator} en {selected_year}",
         hover_name="area",
         hover_data={"area": False, "value": ":.1f"},
-        labels={"value": "value"}
+        labels={"value": "Number of people (millions)" },
     )
     
     # Personnalisation de la colorbar et du titre
     fig.update_layout(
         title=dict(
-            text="World Map of ", 
-            y=1.0,
+            text="World Map of " + (selected_indicator) + " (" + str(selected_year) + ")", 
+            y=0.97,
             x=0.5,
             xanchor='center',
             yanchor='top',
@@ -34,7 +34,7 @@ def create_choropleth(country_data, selected_indicator, selected_year):
             thickness=20,
             xanchor="center",
             x=0.5,
-            y=-0.15,
+            y=0.2,
             yanchor="top",
             title=dict(text="", font=dict(size=14)),
             tickfont=dict(size=12),
@@ -70,19 +70,18 @@ def map_component():
             style={
                 "height": "100%", 
                 "width": "100%",
-                "marginBottom": "40px"
             },
             config={"displayModeBar": False}
         ),
         style={
-            "width": "491.5px",
+            "width": "690px",
             "backgroundColor": "#000000",
-            "padding": "10px",
+            "padding": "15px",
             "borderRadius": "10px",
             "border": "1px solid white",
             "position": "absolute",
-            "left": "750px",
+            "left": "560px",
             "top": "40px",
-            "height": "355.3px",
+            "height": "400px",
         }
     )
