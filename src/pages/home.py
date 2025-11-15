@@ -132,4 +132,4 @@ def update_filled_area(selected_year):
     return fig
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
