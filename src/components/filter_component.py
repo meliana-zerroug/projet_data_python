@@ -35,7 +35,7 @@ def filter_component(df):
             id="year-dropdown",
             options=create_year_options(df),
             value=df["year"].min(),
-            style={"marginBottom": "20px ","color": "white"}
+            style={"marginBottom": "20px ","color": "black"}
         ),
         # Dropdown pour sélectionner l'indicateur
         html.Label("Select an indicator", style={"color": "white", "marginBottom": "10px"}),
